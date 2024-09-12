@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,7 +13,7 @@ void main() {
   );
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      statusBarColor: Colors.white,
     ),
   );
 }
@@ -42,6 +43,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+
     firstRippleController = AnimationController(
       vsync: this,
       duration: Duration(
@@ -49,7 +51,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    firstRippleRadiusAnimation = Tween<double>(begin: 0, end: 150).animate(
+    firstRippleRadiusAnimation = Tween<double>(begin: 50, end: 150).animate(
       CurvedAnimation(
         parent: firstRippleController,
         curve: Curves.ease,
@@ -95,10 +97,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    secondRippleRadiusAnimation = Tween<double>(begin: 0, end: 150).animate(
+    secondRippleRadiusAnimation = Tween<double>(begin: 0, end: 15).animate(
       CurvedAnimation(
         parent: secondRippleController,
-        curve: Curves.ease,
+        curve: Curves.bounceInOut,
       ),
     )
       ..addListener(() {
@@ -115,7 +117,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     secondRippleOpacityAnimation = Tween<double>(begin: 1, end: 0).animate(
       CurvedAnimation(
         parent: secondRippleController,
-        curve: Curves.ease,
+        curve: Curves.bounceInOut,
       ),
     )..addListener(
         () {
@@ -126,7 +128,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     secondRippleWidthAnimation = Tween<double>(begin: 10, end: 0).animate(
       CurvedAnimation(
         parent: secondRippleController,
-        curve: Curves.ease,
+        curve: Curves.bounceInOut,
       ),
     )..addListener(
         () {
@@ -141,10 +143,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    thirdRippleRadiusAnimation = Tween<double>(begin: 0, end: 150).animate(
+    thirdRippleRadiusAnimation = Tween<double>(begin: 0, end: 15).animate(
       CurvedAnimation(
         parent: thirdRippleController,
-        curve: Curves.ease,
+        curve: Curves.bounceInOut,
       ),
     )
       ..addListener(() {
@@ -161,7 +163,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     thirdRippleOpacityAnimation = Tween<double>(begin: 1, end: 0).animate(
       CurvedAnimation(
         parent: thirdRippleController,
-        curve: Curves.ease,
+        curve: Curves.bounceInOut,
       ),
     )..addListener(
         () {
@@ -169,10 +171,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         },
       );
 
-    thirdRippleWidthAnimation = Tween<double>(begin: 10, end: 0).animate(
+    thirdRippleWidthAnimation = Tween<double>(begin: 20, end: 0).animate(
       CurvedAnimation(
         parent: thirdRippleController,
-        curve: Curves.ease,
+        curve: Curves.bounceInOut,
       ),
     )..addListener(
         () {
@@ -186,7 +188,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     centerCircleRadiusAnimation = Tween<double>(begin: 35, end: 50).animate(
       CurvedAnimation(
         parent: centerCircleController,
-        curve: Curves.fastOutSlowIn,
+         curve: Curves.bounceInOut,
       ),
     )
       ..addListener(
@@ -219,7 +221,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     super.initState();
   }
-
   @override
   void dispose() {
     firstRippleController.dispose();
@@ -232,9 +233,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff312b47),
+      backgroundColor: Color(0xffffffff),
       body: Center(
         child: CustomPaint(
+          child: Image.asset('assets/calling_face.png'),
           painter: MyPainter(
             firstRippleRadiusAnimation.value,
             firstRippleOpacityAnimation.value,
@@ -246,6 +248,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             thirdRippleOpacityAnimation.value,
             thirdRippleWidthAnimation.value,
             centerCircleRadiusAnimation.value,
+
           ),
         ),
       ),
@@ -279,34 +282,33 @@ class MyPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Color myColor = Color(0xff653ff4);
+    Color myColor = Color(0xff972f2f);
 
     Paint firstPaint = Paint();
     firstPaint.color = myColor.withOpacity(firstRippleOpacity);
     firstPaint.style = PaintingStyle.stroke;
     firstPaint.strokeWidth = firstRippleStrokeWidth;
-
-    canvas.drawCircle(Offset.zero, firstRippleRadius, firstPaint);
+    Offset center = Offset(size.width / 2, size.height / 2);
+    canvas.drawCircle(center, firstRippleRadius, firstPaint);
 
     Paint secondPaint = Paint();
     secondPaint.color = myColor.withOpacity(secondRippleOpacity);
     secondPaint.style = PaintingStyle.stroke;
     secondPaint.strokeWidth = secondRippleStrokeWidth;
-
-    canvas.drawCircle(Offset.zero, secondRippleRadius, secondPaint);
+    canvas.drawCircle(center, secondRippleRadius, secondPaint);
 
     Paint thirdPaint = Paint();
     thirdPaint.color = myColor.withOpacity(thirdRippleOpacity);
     thirdPaint.style = PaintingStyle.stroke;
     thirdPaint.strokeWidth = thirdRippleStrokeWidth;
 
-    canvas.drawCircle(Offset.zero, thirdRippleRadius, thirdPaint);
+    canvas.drawCircle(center, thirdRippleRadius, thirdPaint);
 
     Paint fourthPaint = Paint();
     fourthPaint.color = myColor;
     fourthPaint.style = PaintingStyle.fill;
 
-    canvas.drawCircle(Offset.zero, centerCircleRadius, fourthPaint);
+    canvas.drawCircle(center, centerCircleRadius, fourthPaint);
   }
 
   @override
@@ -314,3 +316,5 @@ class MyPainter extends CustomPainter {
     return true;
   }
 }
+
+
